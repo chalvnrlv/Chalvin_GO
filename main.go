@@ -3,14 +3,14 @@ package main
 import (
 	"Chalvin-GO/helper"
 	"fmt"
-	"strings"
+	"strconv"
 )
 
 const concertTickets int = 350
 
 var concertName = "Kidung Jagad"
 var RemainingTickets uint = 350
-var bookings = []string{}
+var bookings = make([]map[string]string, 0)
 
 func main() {
 
@@ -58,8 +58,7 @@ func greetUsers() {
 func getFirstNames() []string {
 	firstNames := []string{}
 	for _, booking := range bookings {
-		var names = strings.Fields(booking)
-		firstNames = append(firstNames, names[0])
+		firstNames = append(firstNames, booking["firstName"])
 	}
 	return firstNames
 }
@@ -88,7 +87,16 @@ func getUserInput() (string, string, string, uint) {
 
 func bookTicket(userTickets uint, firstName string, lastName string, email string) {
 	RemainingTickets -= userTickets
-	bookings = append(bookings, firstName+" "+lastName)
+
+	// Map for user
+	var userData = make(map[string]string)
+	userData["firstName"] = firstName
+	userData["lastName"] = lastName
+	userData["email"] = email
+	userData["ticketsAmmount"] = strconv.FormatUint(uint64(userTickets), 10)
+
+	bookings = append(bookings, userData)
+	fmt.Printf("List of bookings is %v\n", bookings)
 
 	fmt.Println("Thank you for", firstName, lastName, "for booking", userTickets, "Tickets. You will receive a confirmation email at", email)
 	fmt.Println(RemainingTickets, "tickets remaining for", concertName)
